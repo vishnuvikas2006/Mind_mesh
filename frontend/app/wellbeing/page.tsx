@@ -1,0 +1,18 @@
+"use client";
+
+import Link from "next/link";
+import { ArrowLeft, BarChart3, CalendarCheck, HeartPulse } from "lucide-react";
+import { useEffect, useState } from "react";
+import { AppShell } from "@/components/mindmesh/AppShell";
+import { SectionHeader } from "@/components/mindmesh/SectionHeader";
+import { StatusBadge } from "@/components/mindmesh/StatusBadge";
+import { api, type Risk } from "@/lib/api";
+
+type Overview = { checkins_this_week: number; latest_risk: Risk | null; risk_history: Risk[] };
+
+export default function WellbeingPage() {
+  const [data, setData] = useState<Overview | null>(null);
+  useEffect(() => { api<Overview>("/victim/me/overview").then(setData).catch(() => setData({ checkins_this_week: 0, latest_risk: null, risk_history: [] })); }, []);
+  const max = Math.max(...(data?.risk_history.map((risk) => risk.dynamic_score) ?? [1]), 1);
+  return <AppShell><div className="mx-auto max-w-2xl"><Link href="/dashboard" className="mb-6 inline-flex min-h-11 items-center gap-1 text-sm font-semibold text-deepteal hover:underline"><ArrowLeft className="h-4 w-4" />Back to home</Link><header><span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#e6f2f5] text-deepteal"><HeartPulse className="h-6 w-6" /></span><h1 className="display-serif mt-4 text-3xl text-ink sm:text-4xl">My wellbeing</h1><p className="mt-2 text-sm leading-6 text-body">Your recent check-ins and support signals.</p></header><section className="mt-7 grid gap-3 sm:grid-cols-2"><article className="rounded-[24px] border border-[#e4eeee] bg-white p-5 shadow-calm"><CalendarCheck className="h-5 w-5 text-deepteal" /><p className="mt-4 text-3xl font-semibold text-ink">{data?.checkins_this_week ?? "-"}</p><p className="mt-1 text-sm text-body">check-ins this week</p></article><article className="rounded-[24px] border border-[#e4eeee] bg-white p-5 shadow-calm"><BarChart3 className="h-5 w-5 text-deepteal" /><p className="mt-4 text-lg font-semibold text-ink">{data?.latest_risk ? "Signal available" : "No signal yet"}</p><p className="mt-1 text-sm text-body">Not a diagnosis.</p></article></section><section className="mt-8"><SectionHeader title="Recent check-ins" />{data?.risk_history.length ? <div className="rounded-[24px] border border-[#e4eeee] bg-white p-5 shadow-calm"><div className="flex h-36 items-end gap-3" aria-label="Recent support signal chart">{data.risk_history.map((risk, index) => <div key={`${risk.created_at}-${index}`} className="flex flex-1 flex-col items-center gap-2"><div className="w-full max-w-12 rounded-t-xl bg-teal/80" style={{ height: `${Math.max(13, (risk.dynamic_score / max) * 105)}px` }} title={`${risk.dynamic_score} support signal`} /><span className="text-[10px] text-body">{new Date(risk.created_at).toLocaleDateString([], { month: "short", day: "numeric" })}</span></div>)}</div><div className="mt-5 space-y-3 border-t border-[#edf3f2] pt-4">{[...data.risk_history].reverse().slice(0, 4).map((risk) => <div key={risk.created_at} className="flex items-center justify-between gap-4"><div><p className="text-sm font-medium text-ink">Check-in - {new Date(risk.created_at).toLocaleDateString([], { dateStyle: "medium" })}</p><p className="mt-1 text-xs text-body">{risk.reasons[0]}</p></div><StatusBadge level={risk.risk_level} /></div>)}</div></div> : <div className="rounded-[24px] border border-dashed border-[#badbd5] bg-white p-7 text-center"><p className="font-semibold text-ink">No check-ins yet</p><Link href="/checkins" className="mt-4 inline-flex rounded-full bg-deepteal px-5 py-3 text-sm font-semibold text-white">Start a check-in</Link></div>}</section></div></AppShell>;
+}

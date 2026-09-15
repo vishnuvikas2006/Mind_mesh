@@ -1,0 +1,20 @@
+# Environment and editor state
+.env
+.env.local
+.vscode/
+
+# Frontend
+frontend/node_modules/
+frontend/.next/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# Runtime data
+uploads/
+
+# Large local training data and model artifacts
+datasets/raw/
+models/

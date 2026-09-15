@@ -1,0 +1,3 @@
+import Link from "next/link";
+import { ArrowRight, HeartHandshake } from "lucide-react";
+export function DailyCheckInBanner() { return <Link href="/checkins" className="mb-7 flex min-h-28 items-center gap-4 rounded-[25px] border border-[#e4eeee] bg-white p-5 shadow-calm transition hover:-translate-y-0.5 hover:border-[#bfe1da]"><span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-mint text-deepteal"><HeartHandshake className="h-6 w-6" /></span><span className="min-w-0 flex-1"><span className="block font-semibold text-ink">Daily check-in</span><span className="mt-1 block text-sm leading-5 text-body">Share how you feel in a few moments.</span></span><ArrowRight className="h-5 w-5 shrink-0 text-deepteal" aria-hidden="true" /></Link>; }

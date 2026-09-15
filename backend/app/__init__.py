@@ -1,0 +1,1 @@
+"""MindMesh FastAPI application."""

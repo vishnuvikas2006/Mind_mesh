@@ -1,0 +1,2 @@
+import { displayLevel } from "@/lib/api";
+export function StatusBadge({ level }: { level: string }) { const styles: Record<string, string> = { low: "bg-[#ddf3ee] text-deepteal", moderate: "bg-[#fff4d6] text-[#815d10]", high: "bg-[#fce8e8] text-[#a33d3d]", critical: "bg-[#f7d5d5] text-[#8e2626]", scheduled: "bg-[#e6f2f5] text-deepteal" }; return <span className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${styles[level] ?? styles.low}`}>{displayLevel(level)}</span>; }

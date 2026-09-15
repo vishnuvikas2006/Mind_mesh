@@ -1,0 +1,20 @@
+fastapi==0.115.12
+uvicorn[standard]==0.34.2
+pymongo==4.12.1
+pydantic[email]==2.11.4
+PyJWT==2.10.1
+bcrypt==4.3.0
+python-multipart==0.0.20
+python-dotenv==1.1.0
+# Optional local-model serving. Use the root .venv and ml requirements to enable.
+transformers==4.49.0
+# Install the CPU wheel from the PyTorch index when creating a new environment.
+# The project virtual environment already contains the CPU build used by training.
+torch==2.14.0
+librosa==1.0.0
+soundfile>=0.13,<0.14
+imageio-ffmpeg>=0.6,<0.7
+scikit-learn>=1.6,<1.9
+joblib>=1.4,<2
+xgboost==3.4.1
+httpx==0.28.1

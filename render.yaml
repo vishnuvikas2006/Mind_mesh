@@ -1,0 +1,45 @@
+services:
+  - type: web
+    name: mindmesh-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install --no-cache-dir -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: MONGODB_DATABASE
+        value: mindmesh
+      - key: JWT_SECRET
+        generateValue: true
+      - key: FRONTEND_ORIGIN
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: PASSWORD_RESET_DEV_MODE
+        value: "false"
+      - key: VOICE_PROVIDER
+        value: openrouter
+      - key: OPENROUTER_API_KEY
+        sync: false
+      - key: OPENROUTER_MODEL
+        value: nex-agi/nex-n2.5-mini:free
+      - key: OPENROUTER_FALLBACK_MODELS
+        value: liquid/lfm-2.5-2.6b:free,inclusionai/ling-3.0-flash-vl:free
+
+  - type: web
+    name: mindmesh-web
+    runtime: node
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    startCommand: npm run start -- -p $PORT
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22.15.0
+      - key: NEXT_PUBLIC_API_URL
+        sync: false

@@ -1,0 +1,15 @@
+"use client";
+
+import { FormEvent, useEffect, useState } from "react";
+import { LockKeyhole } from "lucide-react";
+import { clearSession, api, storeSession, storedUser, type User } from "@/lib/api";
+
+export default function TrustedChangePasswordPage() {
+  const [currentPassword, setCurrentPassword] = useState(""); const [newPassword, setNewPassword] = useState(""); const [confirmPassword, setConfirmPassword] = useState(""); const [message, setMessage] = useState(""); const [loading, setLoading] = useState(false);
+  useEffect(() => { if (storedUser()?.role !== "trusted_person") window.location.assign("/login"); }, []);
+  const valid = newPassword.length >= 8 && newPassword === confirmPassword;
+  async function submit(event: FormEvent) { event.preventDefault(); if (!valid) return; setLoading(true); setMessage(""); try { const result = await api<{ access_token: string; user: User }>("/auth/change-password", { method: "POST", body: JSON.stringify({ current_password: currentPassword, new_password: newPassword }) }); storeSession(result.access_token, result.user); window.location.assign("/trusted"); } catch (error) { setMessage(error instanceof Error ? error.message : "Unable to update password."); } finally { setLoading(false); } }
+  return <main className="grid min-h-screen place-items-center bg-mint p-5"><form onSubmit={submit} className="w-full max-w-md space-y-5 rounded-[28px] border border-[#dbeae7] bg-white p-6 shadow-calm"><div><span className="grid h-12 w-12 place-items-center rounded-2xl bg-mint text-deepteal"><LockKeyhole className="h-6 w-6" /></span><h1 className="display-serif mt-4 text-3xl text-ink">Set your password</h1><p className="mt-2 text-sm leading-6 text-body">Use your temporary password once, then choose a new private password to open your portal.</p></div><PasswordInput label="Temporary password" value={currentPassword} onChange={setCurrentPassword} current /><PasswordInput label="New password" value={newPassword} onChange={setNewPassword} /><PasswordInput label="Confirm new password" value={confirmPassword} onChange={setConfirmPassword} />{message && <p role="alert" className="rounded-xl bg-[#fff3f4] p-3 text-sm text-[#81343f]">{message}</p>}<button disabled={!valid || loading} className="flex h-14 w-full items-center justify-center rounded-full bg-deepteal font-semibold text-white disabled:opacity-60">{loading ? "Updating…" : "Continue"}</button><button type="button" onClick={() => { clearSession(); window.location.assign("/login"); }} className="w-full text-sm font-semibold text-deepteal hover:underline">Log out</button></form></main>;
+}
+
+function PasswordInput({ label, value, onChange, current = false }: { label: string; value: string; onChange: (value: string) => void; current?: boolean }) { return <label className="block"><span className="mb-2 block text-sm font-semibold text-ink">{label}</span><input type="password" value={value} onChange={(event) => onChange(event.target.value)} autoComplete={current ? "current-password" : "new-password"} className="min-h-12 w-full rounded-xl border border-[#d6e2e5] px-3 text-sm outline-none focus:border-deepteal" /></label>; }

@@ -1,0 +1,15 @@
+# CPU-safe training environment. Install into the project virtual environment.
+# Use CPU wheels for this prototype. A standard `pip install -r` resolves the
+# platform-appropriate CPU package; no GPU is required.
+torch==2.14.0
+torchaudio==2.11.0
+transformers==4.49.0
+accelerate==1.15.0
+datasets==5.0.1
+kagglehub==1.0.2
+pandas==3.0.5
+scikit-learn>=1.6,<1.9
+librosa==1.0.0
+soundfile>=0.13,<0.14
+xgboost==3.4.1
+joblib>=1.4,<2
