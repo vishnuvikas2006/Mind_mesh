@@ -9,7 +9,7 @@ from pathlib import Path
 import sys
 from uuid import uuid4
 
-os.environ["MONGODB_DATABASE"] = f"mindmesh_delete_verify_{uuid4().hex}"
+os.environ["MONGODB_DATABASE"] = f"m{uuid4().hex[:24]}"
 os.environ["JWT_SECRET"] = "verify-delete-only-not-a-production-secret"
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))

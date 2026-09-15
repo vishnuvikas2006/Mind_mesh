@@ -9,7 +9,7 @@ import sys
 from urllib.parse import parse_qs, urlparse
 from uuid import uuid4
 
-os.environ["MONGODB_DATABASE"] = f"mindmesh_verify_{uuid4().hex}"
+os.environ["MONGODB_DATABASE"] = f"m{uuid4().hex[:24]}"
 os.environ["JWT_SECRET"] = "verify-auth-only-not-a-production-secret"
 os.environ["PASSWORD_RESET_DEV_MODE"] = "true"
 
