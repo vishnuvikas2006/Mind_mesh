@@ -1,8 +1,13 @@
 "use client";
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { CalendarCheck, CircleUserRound, House, MessageCircleHeart } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { HoldToRecordVoiceNote } from "./HoldToRecordVoiceNote";
+
+const HoldToRecordVoiceNote = dynamic(() => import("./HoldToRecordVoiceNote").then((module) => module.HoldToRecordVoiceNote), {
+  ssr: false,
+  loading: () => null,
+});
 
 const leadingEntries = [{ href: "/dashboard", label: "Home", icon: House }, { href: "/checkins", label: "Check-ins", icon: CalendarCheck }];
 const trailingEntries = [{ href: "/support", label: "Support", icon: MessageCircleHeart }, { href: "/profile", label: "Profile", icon: CircleUserRound }];

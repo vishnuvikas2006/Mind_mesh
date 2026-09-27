@@ -3,15 +3,30 @@ export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000
 export type User = { _id: string; full_name: string; username?: string | null; email: string; mobile?: string | null; role: "victim" | "trusted_person" | "official" | "admin"; consent_status: boolean; must_change_password?: boolean; enabled?: boolean };
 export type Risk = { dynamic_score: number; risk_level: "low" | "moderate" | "high" | "critical"; reasons: string[]; created_at: string; clinical_note: string };
 
-export function token() { return typeof window === "undefined" ? null : localStorage.getItem("mindmesh_token") ?? sessionStorage.getItem("mindmesh_token"); }
+export function token() {
+  if (typeof window === "undefined") return null;
+  return localStorage.getItem("mindmesh_token") ?? sessionStorage.getItem("mindmesh_token");
+}
 export function storeSession(accessToken: string, user: User, persist = true) {
+  if (typeof window === "undefined") return;
   const storage = persist ? localStorage : sessionStorage;
   storage.setItem("mindmesh_token", accessToken);
   storage.setItem("mindmesh_user", JSON.stringify(user));
 }
-export function clearSession() { for (const storage of [localStorage, sessionStorage]) { storage.removeItem("mindmesh_token"); storage.removeItem("mindmesh_user"); } }
+export function clearSession() {
+  if (typeof window === "undefined") return;
+  for (const storage of [localStorage, sessionStorage]) {
+    storage.removeItem("mindmesh_token");
+    storage.removeItem("mindmesh_user");
+  }
+}
 export function storedUser(): User | null {
-  try { return JSON.parse(localStorage.getItem("mindmesh_user") ?? sessionStorage.getItem("mindmesh_user") ?? "null"); } catch { return null; }
+  if (typeof window === "undefined") return null;
+  try {
+    return JSON.parse(localStorage.getItem("mindmesh_user") ?? sessionStorage.getItem("mindmesh_user") ?? "null");
+  } catch {
+    return null;
+  }
 }
 
 export async function api<T>(path: string, init: RequestInit = {}): Promise<T> {

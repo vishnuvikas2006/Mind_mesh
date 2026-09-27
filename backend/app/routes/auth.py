@@ -42,7 +42,8 @@ def normalise_identifier(identifier: str) -> str:
 
 def find_by_identifier(identifier: str) -> dict | None:
     value = normalise_identifier(identifier)
-    return get_db().users.find_one({"$or": [{"username": value}, {"email": value}, {"mobile": identifier.strip()}]})
+    projection = {"_id": 1, "full_name": 1, "username": 1, "email": 1, "mobile": 1, "password_hash": 1, "role": 1, "enabled": 1, "session_version": 1, "must_change_password": 1, "consent_status": 1, "created_at": 1}
+    return get_db().users.find_one({"$or": [{"username": value}, {"email": value}, {"mobile": identifier.strip()}]}, projection)
 
 
 def rate_limit(bucket: str, key: str, limit: int, window: int) -> None:
